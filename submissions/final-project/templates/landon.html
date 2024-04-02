@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Manager (Final Project) </title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Landon AI Inc. Password Manager</h1>
+        <hr>
+        <form action="{{ url_for('generate_passw') }}" method="POST">
+            <div class="form-group">
+                <label for="website">Inpput the Website:</label>
+                <input type="text" class="form-control" id="website" name="website" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Input the Email:</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Generate and Save Password</button>
+        </form>
+        <hr>
+        <h2>History of Passwords</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Website</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for password in passwords %}
+                <tr>
+                    <td>{{ password.website }}</td>
+                    <td>{{ password.email }}</td>
+                    <td>{{ password.password }}</td>
+                    <td>
+                        <form action="{{ url_for('update_password', password_id=loop.index0) }}" method="POST">
+                            <div class="form-group">
+                                <input type="hidden" name="_method" value="PUT">
+                                <input type="hidden" name="website" value="{{ password.website }}">
+                                <input type="hidden" name="email" value="{{ password.email }}">
+                                <input type="text" class="form-control" name="password" value="{{ password.password }}" required>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-success">Update</button>
+                        </form>
+                        <a href="{{ url_for('delete_password', password_id=loop.index0) }}" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
